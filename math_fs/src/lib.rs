@@ -8,8 +8,14 @@ use std::fs;
 /// When unable to read file
 pub fn read_math(path: String) -> String {
     if path.ends_with(".math") {
-        fs::read_to_string(path).expect("Failed to read file.")
+        fs::read_to_string(path)
+            .expect("Failed to read file.")
+            .trim()
+            .to_string()
     } else {
-        fs::read_to_string(path + ".math").expect("Failed to read file.")
+        fs::read_to_string(path + ".math")
+            .expect("Failed to read file.")
+            .trim()
+            .to_string()
     }
 }
