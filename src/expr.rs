@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 
 /// List of available types of `Expression`.
 /// This enum is designed for used as field of `Expr` struct.
@@ -67,6 +67,41 @@ pub enum Vars {
     /// And also independent `y`
     y,
     z,
+}
+
+impl Vars {
+    pub fn to_str(self) -> &'static str {
+        use Vars::*;
+
+        match self {
+            a => "a",
+            b => "b",
+            c => "c",
+            d => "d",
+            e => "e",
+            f => "f",
+            g => "g",
+            h => "h",
+            j => "j",
+            k => "k",
+            l => "l",
+            m => "m",
+            n => "n",
+            o => "o",
+            p => "p",
+            q => "q",
+            r => "r",
+            s => "s",
+            t => "t",
+            u => "u",
+            v => "v",
+            w => "w",
+            x => "x",
+            y => "y",
+            z => "z",
+            _ => "?",
+        }
+    }
 }
 
 /// Expression type.
@@ -138,6 +173,12 @@ impl Dif for Poly {
             coe: coef,
             ex: exp,
         }
+    }
+}
+
+impl Display for Poly {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}{}^{}", self.coe, self.var.to_str(), self.ex)
     }
 }
 
