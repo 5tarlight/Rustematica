@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 /// List of available types of `Expression`.
 /// This enum is designed for used as field of `Expr` struct.
 ///
@@ -33,12 +35,13 @@ pub enum AtomicType {
 /// Lists of available unknown variables.
 /// Some chars such as `x`, `y`, `e` are pre-defined.
 #[allow(non_camel_case_types)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Vars {
     a,
     b,
     c,
     d,
+    /// This variable is pre-defined as *Euler's number `e`*.
     e,
     f,
     g,
@@ -77,6 +80,13 @@ pub enum ExprType {
     Poly(Vars),
     Exponent(f64, f64),
     Log(f64, f64),
+    None,
+}
+
+pub trait Dif: Debug {
+    fn differentiate(&self) -> Self
+    where
+        Self: Sized;
 }
 
 /// Expression struct.
@@ -84,11 +94,64 @@ pub enum ExprType {
 pub struct Expr {
     pub atomic_type: AtomicType,
     pub expr_type: ExprType,
-    pub expr: Option<Box<Expr>>,
+    pub expr: Option<Box<dyn Dif>>,
 }
 
 impl Expr {
-    pub fn differentiate() {
+    pub fn from(str: String) -> Self {
         todo!()
+    }
+}
+
+impl Dif for Expr {
+    fn differentiate(&self) -> Self
+    where
+        Self: Sized,
+    {
+        todo!()
+    }
+}
+
+#[derive(Debug)]
+pub struct Poly {
+    pub var: Vars,
+    pub coe: f64,
+    pub ex: f64,
+}
+
+impl Poly {
+    pub fn from(coe: f64, var: Vars, ex: f64) -> Self {
+        Self { var, coe, ex }
+    }
+}
+
+impl Dif for Poly {
+    fn differentiate(&self) -> Self
+    where
+        Self: Sized,
+    {
+        let coef = self.coe * self.ex;
+        let exp = self.ex - 1f64;
+
+        Self {
+            var: self.var,
+            coe: coef,
+            ex: exp,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn test_poly() {
+        let x_squre = Poly::from(1f64, Vars::x, 2f64);
+        let x_squire_prime = x_squre.differentiate();
+
+        assert_eq!(x_squire_prime.coe, 2f64);
+        assert_eq!(x_squire_prime.var, Vars::x);
+        assert_eq!(x_squire_prime.ex, 1f64);
     }
 }
