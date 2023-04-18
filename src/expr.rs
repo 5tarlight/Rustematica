@@ -70,6 +70,15 @@ pub enum Vars {
 }
 
 impl Vars {
+    /// Convert variable as printable str
+    /// (`&'static str`)
+    ///
+    /// # Example
+    /// ```
+    /// use rustemetica::expr::Vars;
+    /// assert_eq!(Vars::a.to_str(), "a");
+    /// assert_eq!(Vars::z.to_str(), "z");
+    /// ```
     pub fn to_str(self) -> &'static str {
         use Vars::*;
 
@@ -82,6 +91,7 @@ impl Vars {
             f => "f",
             g => "g",
             h => "h",
+            i => "i",
             j => "j",
             k => "k",
             l => "l",
@@ -99,7 +109,7 @@ impl Vars {
             x => "x",
             y => "y",
             z => "z",
-            _ => "?",
+            // _ => "?",
         }
     }
 }
@@ -194,5 +204,35 @@ mod tests {
         assert_eq!(x_squire_prime.coe, 2f64);
         assert_eq!(x_squire_prime.var, Vars::x);
         assert_eq!(x_squire_prime.ex, 1f64);
+    }
+
+    #[test]
+    pub fn vars_to_string() {
+        assert_eq!(Vars::a.to_str(), "a");
+        assert_eq!(Vars::b.to_str(), "b");
+        assert_eq!(Vars::c.to_str(), "c");
+        assert_eq!(Vars::d.to_str(), "d");
+        assert_eq!(Vars::e.to_str(), "e");
+        assert_eq!(Vars::f.to_str(), "f");
+        assert_eq!(Vars::g.to_str(), "g");
+        assert_eq!(Vars::h.to_str(), "h");
+        assert_eq!(Vars::i.to_str(), "i");
+        assert_eq!(Vars::j.to_str(), "j");
+        assert_eq!(Vars::k.to_str(), "k");
+        assert_eq!(Vars::l.to_str(), "l");
+        assert_eq!(Vars::m.to_str(), "m");
+        assert_eq!(Vars::n.to_str(), "n");
+        assert_eq!(Vars::o.to_str(), "o");
+        assert_eq!(Vars::p.to_str(), "p");
+        assert_eq!(Vars::q.to_str(), "q");
+        assert_eq!(Vars::r.to_str(), "r");
+        assert_eq!(Vars::s.to_str(), "s");
+        assert_eq!(Vars::t.to_str(), "t");
+        assert_eq!(Vars::u.to_str(), "u");
+        assert_eq!(Vars::v.to_str(), "v");
+        assert_eq!(Vars::w.to_str(), "w");
+        assert_eq!(Vars::x.to_str(), "x");
+        assert_eq!(Vars::y.to_str(), "y");
+        assert_eq!(Vars::z.to_str(), "z");
     }
 }
