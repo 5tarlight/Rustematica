@@ -70,8 +70,7 @@ pub enum Vars {
 }
 
 impl Vars {
-    /// Convert variable as printable str
-    /// (`&'static str`)
+    /// Convert variable as printable str (`&'static str`)
     ///
     /// # Example
     /// ```
