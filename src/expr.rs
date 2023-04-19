@@ -200,6 +200,37 @@ impl Display for Poly {
     }
 }
 
+/// This struct means Constant value
+/// such as `5`, `-12`.
+/// When differentiated, it would be `0f64`
+#[derive(Debug)]
+pub struct Const {
+    pub value: f64,
+}
+
+impl Const {
+    pub fn from(value: f64) -> Self {
+        Self { value }
+    }
+}
+
+impl Display for Const {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.value)
+    }
+}
+
+impl Dif for Const {
+    /// Differentiate constant.
+    /// Every differentiated constant will be `0f64`.
+    fn differentiate(&self) -> Self
+    where
+        Self: Sized,
+    {
+        Self { value: 0f64 }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -242,5 +273,17 @@ mod tests {
         assert_eq!(Vars::x.to_str(), "x");
         assert_eq!(Vars::y.to_str(), "y");
         assert_eq!(Vars::z.to_str(), "z");
+    }
+
+    #[test]
+    pub fn create_const() {
+        let five = Const::from(5.);
+        assert_eq!(five.value, 5f64);
+    }
+
+    #[test]
+    pub fn dif_const() {
+        let zero = Const::from(5.).differentiate();
+        assert_eq!(zero.value, 0f64);
     }
 }
