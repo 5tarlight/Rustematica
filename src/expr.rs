@@ -200,6 +200,26 @@ impl Display for Poly {
     }
 }
 
+#[derive(Debug)]
+pub struct Const {
+    pub value: f64,
+}
+
+impl Const {
+    pub fn from(value: f64) -> Self {
+        Self { value }
+    }
+}
+
+impl Dif for Const {
+    fn differentiate(&self) -> Self
+    where
+        Self: Sized,
+    {
+        Self { value: 0f64 }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
