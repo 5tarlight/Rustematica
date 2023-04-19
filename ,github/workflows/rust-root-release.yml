@@ -1,4 +1,4 @@
-name: Rust
+name: rustematica-root-release
 
 on:
   push:
