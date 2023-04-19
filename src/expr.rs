@@ -211,6 +211,12 @@ impl Const {
     }
 }
 
+impl Display for Const {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.value)
+    }
+}
+
 impl Dif for Const {
     fn differentiate(&self) -> Self
     where
@@ -262,5 +268,17 @@ mod tests {
         assert_eq!(Vars::x.to_str(), "x");
         assert_eq!(Vars::y.to_str(), "y");
         assert_eq!(Vars::z.to_str(), "z");
+    }
+
+    #[test]
+    pub fn create_const() {
+        let five = Const::from(5.);
+        assert_eq!(five.value, 5f64);
+    }
+
+    #[test]
+    pub fn dif_const() {
+        let zero = Const::from(5.).differentiate();
+        assert_eq!(zero.value, 0f64);
     }
 }
