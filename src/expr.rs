@@ -159,10 +159,14 @@ impl Expr {
     }
 }
 
+/// This struct is one term of Polynonmial Expression.
 #[derive(Debug)]
 pub struct Poly {
+    /// Variable of term.
     pub var: Vars,
+    /// Coefficient of term.
     pub coe: f64,
+    /// Exponent of term.
     pub ex: f64,
 }
 
@@ -173,6 +177,8 @@ impl Poly {
 }
 
 impl Dif for Poly {
+    /// Differentiate polynomial expression.
+    /// `ax^b` will be `abx^(b-1)`.
     fn differentiate(&self) -> Self
     where
         Self: Sized,
