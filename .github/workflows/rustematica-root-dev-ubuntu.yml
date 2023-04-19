@@ -1,4 +1,4 @@
-name: rustematica-root-dev
+name: rustematica-root-dev-ubuntu
 
 on:
   push:
