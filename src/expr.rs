@@ -120,14 +120,17 @@ impl Vars {
 /// Order is down to up.
 #[derive(Debug, Clone, Copy)]
 pub enum ExprType {
-    Constant(f64),
+    // Constant(f64),
     Poly(Vars),
     Exponent(f64, f64),
     Log(f64, f64),
     None,
 }
 
+/// Dif trait means a struct which implements Dif
+/// can be differentiated.
 pub trait Dif: Debug {
+    /// Differentiate self.
     fn differentiate(&self) -> Self
     where
         Self: Sized;
@@ -136,22 +139,22 @@ pub trait Dif: Debug {
 /// Expression struct.
 #[derive(Debug)]
 pub struct Expr {
+    /// Atomic Type of this expression.
+    /// If `atomic_type` is `Literal`, `Constant` or `Var`,
+    /// `expr_type` should be `None`
     pub atomic_type: AtomicType,
+    /// `expr_type` is a type of expression.
+    /// If `automic_type` is `Literal`, `Constant` or `Var`,
+    /// this should be `None`.
     pub expr_type: ExprType,
+    /// This is real expression.
+    /// If `atomic_type` is `Var`, this should be None.
     pub expr: Option<Box<dyn Dif>>,
 }
 
 impl Expr {
+    /// Parse string to make expression.
     pub fn from(str: String) -> Self {
-        todo!()
-    }
-}
-
-impl Dif for Expr {
-    fn differentiate(&self) -> Self
-    where
-        Self: Sized,
-    {
         todo!()
     }
 }
