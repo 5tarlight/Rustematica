@@ -200,6 +200,9 @@ impl Display for Poly {
     }
 }
 
+/// This struct means Constant value
+/// such as `5`, `-12`.
+/// When differentiated, it would be `0f64`
 #[derive(Debug)]
 pub struct Const {
     pub value: f64,
@@ -218,6 +221,8 @@ impl Display for Const {
 }
 
 impl Dif for Const {
+    /// Differentiate constant.
+    /// Every differentiated constant will be `0f64`.
     fn differentiate(&self) -> Self
     where
         Self: Sized,
