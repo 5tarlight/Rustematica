@@ -118,45 +118,22 @@ impl Vars {
 /// such as `cos`, `sin` and others.
 /// Inner values indicate operands.
 /// Order is down to up.
-#[derive(Debug, Clone, Copy)]
-pub enum ExprType {
+#[derive(Debug)]
+pub enum AtomicExpr {
     // Constant(f64),
-    Poly(Vars),
-    Exponent(f64, f64),
-    Log(f64, f64),
-    None,
+    Poly(Poly),
+    Constant(Const),
+    Exponent(),
+    Log(),
 }
 
 /// Dif trait means a struct which implements Dif
 /// can be differentiated.
 pub trait Dif: Debug {
     /// Differentiate self.
-    fn differentiate(&self) -> Self
+    fn differentiate(&self) -> AtomicExpr
     where
         Self: Sized;
-}
-
-/// Expression struct.
-#[derive(Debug)]
-pub struct Expr {
-    /// Atomic Type of this expression.
-    /// If `atomic_type` is `Literal`, `Constant` or `Var`,
-    /// `expr_type` should be `None`
-    pub atomic_type: AtomicType,
-    /// `expr_type` is a type of expression.
-    /// If `automic_type` is `Literal`, `Constant` or `Var`,
-    /// this should be `None`.
-    pub expr_type: ExprType,
-    /// This is real expression.
-    /// If `atomic_type` is `Var`, this should be None.
-    pub expr: Option<Box<dyn Dif>>,
-}
-
-impl Expr {
-    /// Parse string to make expression.
-    pub fn from(str: String) -> Self {
-        todo!()
-    }
 }
 
 /// This struct is one term of Polynonmial Expression.
@@ -179,24 +156,35 @@ impl Poly {
 impl Dif for Poly {
     /// Differentiate polynomial expression.
     /// `ax^b` will be `abx^(b-1)`.
-    fn differentiate(&self) -> Self
+    fn differentiate(&self) -> AtomicExpr
     where
         Self: Sized,
     {
         let coef = self.coe * self.ex;
         let exp = self.ex - 1f64;
 
-        Self {
-            var: self.var,
-            coe: coef,
-            ex: exp,
+        if self.ex != 1. {
+            let poly = Poly {
+                var: self.var,
+                coe: coef,
+                ex: exp,
+            };
+
+            AtomicExpr::Poly(poly)
+        } else {
+            let con = Const { value: self.coe };
+            AtomicExpr::Constant(con)
         }
     }
 }
 
 impl Display for Poly {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}{}^{}", self.coe, self.var.to_str(), self.ex)
+        if self.ex == 1. {
+            write!(f, "{}{}", self.coe, self.var.to_str())
+        } else {
+            write!(f, "{}{}^{}", self.coe, self.var.to_str(), self.ex)
+        }
     }
 }
 
@@ -212,6 +200,10 @@ impl Const {
     pub fn from(value: f64) -> Self {
         Self { value }
     }
+
+    pub fn to_f64(&self) -> f64 {
+        self.value
+    }
 }
 
 impl Display for Const {
@@ -223,26 +215,31 @@ impl Display for Const {
 impl Dif for Const {
     /// Differentiate constant.
     /// Every differentiated constant will be `0f64`.
-    fn differentiate(&self) -> Self
+    fn differentiate(&self) -> AtomicExpr
     where
         Self: Sized,
     {
-        Self { value: 0f64 }
+        let con = Const { value: 0f64 };
+        AtomicExpr::Constant(con)
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use core::panic;
+
     use super::*;
 
     #[test]
     pub fn test_poly() {
         let x_squre = Poly::from(1f64, Vars::x, 2f64);
-        let x_squire_prime = x_squre.differentiate();
-
-        assert_eq!(x_squire_prime.coe, 2f64);
-        assert_eq!(x_squire_prime.var, Vars::x);
-        assert_eq!(x_squire_prime.ex, 1f64);
+        if let AtomicExpr::Poly(poly) = x_squre.differentiate() {
+            assert_eq!(poly.coe, 2f64);
+            assert_eq!(poly.var, Vars::x);
+            assert_eq!(poly.ex, 1f64);
+        } else {
+            panic!("Differentiated value should be Poly!");
+        }
     }
 
     #[test]
@@ -283,7 +280,19 @@ mod tests {
 
     #[test]
     pub fn dif_const() {
-        let zero = Const::from(5.).differentiate();
-        assert_eq!(zero.value, 0f64);
+        if let AtomicExpr::Constant(con) = Const::from(5.).differentiate() {
+            assert_eq!(con.value, 0f64);
+        } else {
+            panic!("Differentiated value should be zero");
+        }
+    }
+
+    #[test]
+    pub fn dif_poly_to_const() {
+        if let AtomicExpr::Constant(con) = Poly::from(3., Vars::x, 1.).differentiate() {
+            assert_eq!(con.to_f64(), 3.);
+        } else {
+            panic!("Differentiated value should be Constant");
+        }
     }
 }
