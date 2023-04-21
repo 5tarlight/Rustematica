@@ -196,6 +196,10 @@ impl Const {
     pub fn from(value: f64) -> Self {
         Self { value }
     }
+
+    pub fn into(&self) -> f64 {
+        self.value
+    }
 }
 
 impl Display for Const {
