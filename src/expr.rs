@@ -125,7 +125,6 @@ pub enum AtomicExpr {
     Constant(Const),
     Exponent(),
     Log(),
-    None,
 }
 
 /// Dif trait means a struct which implements Dif
