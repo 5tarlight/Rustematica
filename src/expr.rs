@@ -197,7 +197,7 @@ impl Const {
         Self { value }
     }
 
-    pub fn into(&self) -> f64 {
+    pub fn to_f64(&self) -> f64 {
         self.value
     }
 }
@@ -280,6 +280,15 @@ mod tests {
             assert_eq!(con.value, 0f64);
         } else {
             panic!("Differentiated value should be zero");
+        }
+    }
+
+    #[test]
+    pub fn dif_poly_to_const() {
+        if let AtomicExpr::Constant(con) = Poly::from(3., Vars::x, 1.).differentiate() {
+            assert_eq!(con.to_f64(), 3.);
+        } else {
+            panic!("Differentiated value should be Constant");
         }
     }
 }
