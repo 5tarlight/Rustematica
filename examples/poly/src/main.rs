@@ -1,4 +1,4 @@
-use rustemetica::expr::{Dif, Poly, Vars};
+use rustemetica::expr::{AtomicExpr, Dif, Poly, Vars};
 
 fn main() {
     let poly1 = Poly::from(5f64, Vars::x, 3f64);
@@ -11,13 +11,15 @@ fn main() {
         poly2.to_string(),
         poly3.to_string()
     );
+    print!("d/dx {} = ", origin);
 
-    let diff = format!(
-        "{} + {} + {}",
-        poly1.differentiate().to_string(),
-        poly2.differentiate().to_string(),
-        poly3.differentiate().to_string()
-    );
-
-    println!("d/dx {} = {}", origin, diff)
+    if let AtomicExpr::Poly(poly) = poly1.differentiate() {
+        print!("{} ", poly.to_string());
+    }
+    if let AtomicExpr::Poly(poly) = poly2.differentiate() {
+        print!("{} ", poly.to_string());
+    }
+    if let AtomicExpr::Constant(con) = poly3.differentiate() {
+        println!("{}", con);
+    }
 }

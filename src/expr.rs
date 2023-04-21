@@ -180,7 +180,11 @@ impl Dif for Poly {
 
 impl Display for Poly {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}{}^{}", self.coe, self.var.to_str(), self.ex)
+        if self.ex == 1. {
+            write!(f, "{}{}", self.coe, self.var.to_str())
+        } else {
+            write!(f, "{}{}^{}", self.coe, self.var.to_str(), self.ex)
+        }
     }
 }
 
