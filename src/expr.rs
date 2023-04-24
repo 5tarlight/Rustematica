@@ -1,37 +1,5 @@
 use std::fmt::{Debug, Display};
 
-/// List of available types of `Expression`.
-/// This enum is designed for used as field of `Expr` struct.
-///
-/// # See Also
-/// [Expr]
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub enum AtomicType {
-    /// Expression Type: `Literal`.
-    /// Literal is called as `constant` in mathematics.
-    /// Literal indicates decimal numberic constant.
-    /// Some special constants (such as `e` and `pi`) is belonged to `Constant`.
-    Literal,
-
-    /// Special constant.
-    /// Special constants are well-known mathematical constants
-    /// such as `e` and `pi`
-    Constant,
-
-    /// Unknown variables.
-    /// In most case `x` is expected to be used as.
-    /// Completely unknown variables (except for `x` and `y`)
-    Var,
-
-    /// Other Expressions.
-    /// With this type, Expression is no longer *atomic*.
-    /// And this means this expression stage is consists of subsequent
-    /// expressions and also will cause reculsive function calls.
-    /// If expressions are too recursived to over the reculsive function call
-    /// limitation, it may cause unexpected crash.
-    Ex,
-}
-
 /// Lists of available unknown variables.
 /// Some chars such as `x`, `y`, `e` are pre-defined.
 #[allow(non_camel_case_types)]
@@ -123,6 +91,7 @@ pub enum AtomicExpr {
     // Constant(f64),
     Poly(Poly),
     Constant(Const),
+    Var(Variable),
     Exponent(),
     Log(),
 }
@@ -221,6 +190,39 @@ impl Dif for Const {
     {
         let con = Const { value: 0f64 };
         AtomicExpr::Constant(con)
+    }
+}
+
+/// Variable expression.
+/// Wrapper of [Vars].
+/// Nothing different from [Vars] but, designed for differentiation.
+#[derive(Debug)]
+pub struct Variable {
+    pub var: Vars,
+}
+
+impl Variable {
+    pub fn from(var: Vars) -> Self {
+        Self { var }
+    }
+
+    pub fn to_str(&self) -> &str {
+        self.var.to_str()
+    }
+}
+
+impl Display for Variable {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.to_str())
+    }
+}
+
+impl Dif for Variable {
+    fn differentiate(&self) -> AtomicExpr
+    where
+        Self: Sized,
+    {
+        AtomicExpr::Constant(Const { value: 1. })
     }
 }
 
